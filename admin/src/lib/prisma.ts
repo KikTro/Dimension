@@ -15,12 +15,14 @@ if (!fs.existsSync(dbPath)) {
   dbPath = "/Users/kiktro/Documents/Dimension/prisma/dimension.db";
 }
 
+const datasourceUrl = process.env.DATABASE_URL || `file:${dbPath}`;
+
 export const prisma =
   globalForPrisma.prisma ??
   new PrismaClient({
     datasources: {
       db: {
-        url: `file:${dbPath}`,
+        url: datasourceUrl,
       },
     },
     log: ["error", "warn"],
