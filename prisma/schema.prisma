@@ -1,0 +1,99 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dimension.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String
+  price       Float
+  category    String
+  images      String   // JSON string array of image URLs
+  materials   String   // JSON string array of available materials
+  colors      String   // JSON string array of color names / hexes
+  dimensions  String   // e.g. "145 × 85 × 40 mm"
+  printTime   String   // e.g. "3h 15m"
+  sku         String   @unique
+  featured    Boolean  @default(false)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Material {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  pricePerKg  Float
+  density     Float    @default(1.24) // g/cm3
+  colors      String   // JSON string array of available colors
+  description String?
+  nozzleTemp  String?  // e.g. "210-230°C"
+  bedTemp     String?  // e.g. "55-65°C"
+  tensile     String?  // e.g. "50 MPa"
+  impact      String?  // e.g. "High"
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model PricingSettings {
+  id             String   @id @default("default")
+  minimumCharge  Float    @default(150.0)
+  machineFee     Float    @default(45.0)
+  supportFee     Float    @default(25.0)
+  finishingFee   Float    @default(20.0)
+  packagingFee   Float    @default(30.0)
+  shippingFee    Float    @default(70.0)
+  rushMultiplier Float    @default(1.35)
+  updatedAt      DateTime @updatedAt
+}
+
+model PrintRequest {
+  id              String   @id @default(cuid())
+  requestNumber   String   @unique
+  fileName        String
+  fileUrl         String
+  fileSize        Int
+  dimensionsX     Float?
+  dimensionsY     Float?
+  dimensionsZ     Float?
+  volumeCm3       Float?
+  triangleCount   Int?
+  material        String
+  color           String
+  layerHeight     String
+  infill          Int
+  supports        Boolean  @default(false)
+  quantity        Int      @default(1)
+  estimatedWeight Float
+  estimatedPrice  Float
+  customerName    String
+  customerEmail   String
+  customerPhone   String
+  customerAddress String
+  notes           String?
+  status          String   @default("New") // New, Reviewing, Quoted, Confirmed, Printing, Quality Check, Ready, Completed, Cancelled
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Order {
+  id              String   @id @default(cuid())
+  orderNumber     String   @unique
+  items           String   // JSON string of item array
+  totalAmount     Float
+  customerName    String
+  customerEmail   String
+  customerPhone   String
+  customerAddress String
+  notes           String?
+  status          String   @default("Pending") // Pending, Confirmed, Printing, Quality Check, Shipped, Delivered, Cancelled
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}

@@ -1,0 +1,102 @@
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
+  --font-serif: 'Instrument Serif', Georgia, serif;
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --background: #FBFBF9;
+  --foreground: #121417;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  letter-spacing: -0.01em;
+}
+
+::selection {
+  background: #121417;
+  color: #FBFBF9;
+}
+
+/* Custom architectural scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F4F3EE;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #DDD9CE;
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #B85834;
+}
+
+/* Architectural hairline border */
+.hairline-b {
+  border-bottom: 1px solid rgba(18, 20, 23, 0.1);
+}
+
+.hairline-t {
+  border-top: 1px solid rgba(18, 20, 23, 0.1);
+}
+
+.hairline-r {
+  border-right: 1px solid rgba(18, 20, 23, 0.1);
+}
+
+.hairline-l {
+  border-left: 1px solid rgba(18, 20, 23, 0.1);
+}
+
+.hairline {
+  border: 1px solid rgba(18, 20, 23, 0.1);
+}
+
+/* Technical caliper corner accents */
+.caliper-corner {
+  position: relative;
+}
+
+.caliper-corner::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  border-top: 1.5px solid #121417;
+  border-left: 1.5px solid #121417;
+}
+
+.caliper-corner::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 6px;
+  height: 6px;
+  border-bottom: 1.5px solid #121417;
+  border-right: 1.5px solid #121417;
+}
+
+/* Paper Grid background */
+.bg-architectural-grid {
+  background-image: 
+    linear-gradient(to right, rgba(18, 20, 23, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(18, 20, 23, 0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
