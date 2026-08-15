@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { SEED_MATERIALS } from "@/lib/seed-data";
 
 export async function GET() {
   try {
+    const { prisma } = await import("@/lib/prisma");
     const materials = await prisma.material.findMany({
       orderBy: { createdAt: "asc" },
     });
@@ -14,13 +15,14 @@ export async function GET() {
 
     return NextResponse.json(parsed);
   } catch (error) {
-    console.error("Failed to fetch materials:", error);
-    return NextResponse.json({ error: "Failed to fetch materials" }, { status: 500 });
+    console.warn("Database unavailable, serving static materials:", error);
+    return NextResponse.json(SEED_MATERIALS);
   }
 }
 
 export async function POST(request: Request) {
   try {
+    const { prisma } = await import("@/lib/prisma");
     const body = await request.json();
     const { name, pricePerKg, density, colors, description, nozzleTemp, bedTemp, tensile, impact, active } = body;
 

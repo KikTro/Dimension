@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { SEED_PRICING_SETTINGS } from "@/lib/seed-data";
 
 export async function GET() {
   try {
+    const { prisma } = await import("@/lib/prisma");
     let settings = await prisma.pricingSettings.findUnique({
       where: { id: "default" },
     });
@@ -24,13 +25,14 @@ export async function GET() {
 
     return NextResponse.json(settings);
   } catch (error) {
-    console.error("Failed to fetch pricing settings:", error);
-    return NextResponse.json({ error: "Failed to fetch pricing settings" }, { status: 500 });
+    console.warn("Database unavailable, serving static pricing:", error);
+    return NextResponse.json(SEED_PRICING_SETTINGS);
   }
 }
 
 export async function PUT(request: Request) {
   try {
+    const { prisma } = await import("@/lib/prisma");
     const body = await request.json();
     const {
       minimumCharge,

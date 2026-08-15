@@ -1,12 +1,13 @@
 import React from "react";
 import { notFound } from "next/navigation";
-import { prisma } from "@/lib/prisma";
 import ProductDetailClient from "@/components/models/ProductDetailClient";
+import { SEED_PRODUCTS } from "@/lib/seed-data";
 
 export const revalidate = 0;
 
 async function getProduct(slugOrId: string) {
   try {
+    const { prisma } = await import("@/lib/prisma");
     let product = await prisma.product.findUnique({
       where: { slug: slugOrId },
     });
@@ -26,8 +27,12 @@ async function getProduct(slugOrId: string) {
       colors: typeof product.colors === "string" ? JSON.parse(product.colors) : product.colors,
     };
   } catch (err) {
-    console.error("Failed to load product:", err);
-    return null;
+    console.warn("Database unavailable, using static product data:", err);
+    // Fallback to static seed data
+    const product = SEED_PRODUCTS.find(
+      (p) => p.slug === slugOrId || p.id === slugOrId
+    );
+    return product || null;
   }
 }
 

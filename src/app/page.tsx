@@ -2,7 +2,7 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import dynamic from "next/dynamic";
-import { prisma } from "@/lib/prisma";
+import { SEED_PRODUCTS, SEED_MATERIALS } from "@/lib/seed-data";
 
 const HeroSlicerAnimation = dynamic(
   () => import("@/components/3d/HeroSlicerAnimation"),
@@ -37,6 +37,7 @@ export const revalidate = 0;
 
 async function getHomeData() {
   try {
+    const { prisma } = await import("@/lib/prisma");
     const [featuredProducts, materials] = await Promise.all([
       prisma.product.findMany({
         where: { active: true },
@@ -67,8 +68,17 @@ async function getHomeData() {
       materials: parsedMaterials,
     };
   } catch (err) {
-    console.error("Failed to load home data:", err);
-    return { products: [], materials: [] };
+    console.warn("Database unavailable, using static home data:", err);
+    // Static fallback
+    const products = SEED_PRODUCTS
+      .filter((p) => p.active)
+      .sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0))
+      .slice(0, 4);
+    const materials = SEED_MATERIALS
+      .filter((m) => m.active)
+      .sort((a, b) => a.pricePerKg - b.pricePerKg)
+      .slice(0, 5);
+    return { products, materials };
   }
 }
 
@@ -93,7 +103,7 @@ export default async function HomePage() {
               <div className="space-y-4">
                 <h1 className="font-serif text-5xl sm:text-6xl lg:text-7xl text-ink leading-[1.05] tracking-tight">
                   Send us a shape. <br />
-                  <span className="italic font-normal text-ink-muted">We’ll make it real.</span>
+                  <span className="italic font-normal text-ink-muted">We'll make it real.</span>
                 </h1>
                 <p className="text-base sm:text-lg text-ink-muted font-sans max-w-xl leading-relaxed">
                   Precision 3D printing and manufacturing for designers, engineers, and creators. Quality physical objects produced from your digital 3D designs.

@@ -1,11 +1,12 @@
 import React from "react";
-import { prisma } from "@/lib/prisma";
 import ModelsClientGrid from "@/components/models/ModelsClientGrid";
+import { SEED_PRODUCTS } from "@/lib/seed-data";
 
 export const revalidate = 0;
 
 async function getCatalogData() {
   try {
+    const { prisma } = await import("@/lib/prisma");
     const products = await prisma.product.findMany({
       where: { active: true },
       orderBy: { createdAt: "desc" },
@@ -22,8 +23,10 @@ async function getCatalogData() {
 
     return { products: parsed, categories };
   } catch (err) {
-    console.error("Failed to load models catalog:", err);
-    return { products: [], categories: [] };
+    console.warn("Database unavailable, using static models catalog:", err);
+    const products = SEED_PRODUCTS.filter((p) => p.active);
+    const categories = Array.from(new Set(products.map((p) => p.category))).filter(Boolean);
+    return { products, categories };
   }
 }
 

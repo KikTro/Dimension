@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { SEED_MATERIALS, SEED_PRICING_SETTINGS } from "@/lib/seed-data";
 import { calculatePrintPrice } from "@/lib/pricing-calculator";
 
 export async function POST(request: Request) {
@@ -22,34 +22,43 @@ export async function POST(request: Request) {
       );
     }
 
-    // Fetch active pricing settings from DB
-    const settings = await prisma.pricingSettings.findUnique({
-      where: { id: "default" },
-    });
+    // Try database first, fall back to static data
+    let settings: any = SEED_PRICING_SETTINGS;
+    let material: any = null;
 
-    if (!settings) {
-      return NextResponse.json(
-        { error: "Pricing configuration not found" },
-        { status: 500 }
-      );
-    }
+    try {
+      const { prisma } = await import("@/lib/prisma");
 
-    // Fetch material from DB
-    let material = null;
-    if (materialName) {
-      material = await prisma.material.findFirst({
-        where: {
-          name: { contains: materialName },
-          active: true,
-        },
+      const dbSettings = await prisma.pricingSettings.findUnique({
+        where: { id: "default" },
       });
-    }
+      if (dbSettings) {
+        settings = dbSettings;
+      }
 
-    if (!material) {
-      // Fallback to first active material
-      material = await prisma.material.findFirst({
-        where: { active: true },
-      });
+      if (materialName) {
+        material = await prisma.material.findFirst({
+          where: {
+            name: { contains: materialName },
+            active: true,
+          },
+        });
+      }
+
+      if (!material) {
+        material = await prisma.material.findFirst({
+          where: { active: true },
+        });
+      }
+    } catch {
+      // Database unavailable — use static seed data
+      console.warn("Database unavailable for price calculation, using static data");
+      if (materialName) {
+        material = SEED_MATERIALS.find((m) => m.name.includes(materialName));
+      }
+      if (!material) {
+        material = SEED_MATERIALS[0];
+      }
     }
 
     const materialPricePerKg = material ? material.pricePerKg : 900.0;

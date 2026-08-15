@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { SEED_PRODUCTS } from "@/lib/seed-data";
 
 export async function GET(request: Request) {
   try {
@@ -10,43 +10,69 @@ export async function GET(request: Request) {
     const featured = searchParams.get("featured");
     const adminMode = searchParams.get("admin") === "true";
 
-    const where: any = {};
-    if (!adminMode) {
-      where.active = true;
-    }
-    if (category && category !== "All") {
-      where.category = category;
-    }
-    if (featured === "true") {
-      where.featured = true;
-    }
-    if (search) {
-      where.OR = [
-        { name: { contains: search } },
-        { description: { contains: search } },
-        { sku: { contains: search } },
-      ];
-    }
+    let parsed: any[];
 
-    const products = await prisma.product.findMany({
-      where,
-      orderBy: { createdAt: "desc" },
-    });
+    try {
+      const { prisma } = await import("@/lib/prisma");
 
-    const parsed = products.map((p) => {
-      const parsedMaterials: string[] = typeof p.materials === "string" ? JSON.parse(p.materials) : p.materials;
-      return {
-        ...p,
-        images: typeof p.images === "string" ? JSON.parse(p.images) : p.images,
-        materials: parsedMaterials,
-        colors: typeof p.colors === "string" ? JSON.parse(p.colors) : p.colors,
-      };
-    });
+      const where: any = {};
+      if (!adminMode) {
+        where.active = true;
+      }
+      if (category && category !== "All") {
+        where.category = category;
+      }
+      if (featured === "true") {
+        where.featured = true;
+      }
+      if (search) {
+        where.OR = [
+          { name: { contains: search } },
+          { description: { contains: search } },
+          { sku: { contains: search } },
+        ];
+      }
+
+      const products = await prisma.product.findMany({
+        where,
+        orderBy: { createdAt: "desc" },
+      });
+
+      parsed = products.map((p) => {
+        const parsedMaterials: string[] = typeof p.materials === "string" ? JSON.parse(p.materials) : p.materials;
+        return {
+          ...p,
+          images: typeof p.images === "string" ? JSON.parse(p.images) : p.images,
+          materials: parsedMaterials,
+          colors: typeof p.colors === "string" ? JSON.parse(p.colors) : p.colors,
+        };
+      });
+    } catch {
+      // Database unavailable — use static seed data
+      console.warn("Database unavailable for products, using static data");
+      parsed = SEED_PRODUCTS.filter((p) => adminMode || p.active);
+
+      if (category && category !== "All") {
+        parsed = parsed.filter((p) => p.category === category);
+      }
+      if (featured === "true") {
+        parsed = parsed.filter((p) => p.featured);
+      }
+      if (search) {
+        const q = search.toLowerCase();
+        parsed = parsed.filter(
+          (p) =>
+            p.name.toLowerCase().includes(q) ||
+            p.description.toLowerCase().includes(q) ||
+            p.sku.toLowerCase().includes(q)
+        );
+      }
+    }
 
     // Filter by material in memory if needed
     let filtered = parsed;
     if (material && material !== "All") {
-      filtered = parsed.filter((p) =>
+      filtered = parsed.filter((p: any) =>
         p.materials.some((m: string) => m.toLowerCase().includes(material.toLowerCase()))
       );
     }
@@ -60,6 +86,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
+    const { prisma } = await import("@/lib/prisma");
     const body = await request.json();
     const {
       name,
