@@ -130,7 +130,7 @@ export const SEED_PRODUCTS = [
     slug: "nothing",
     description:
       "There is nothing here :)",
-    price: 640.0,
+    price: 0.0,
     category: "Placeholder",
     images: [
       "",
