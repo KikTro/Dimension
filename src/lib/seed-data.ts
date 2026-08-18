@@ -124,45 +124,23 @@ export const SEED_MATERIALS = [
 ];
 
 export const SEED_PRODUCTS = [
-  {
-    id: "prod-001",
-    name: "NONE",
-    slug: "NONE",
-    description:
-      "Products will be added soon",
-    price: 00.0,
-    category: "OPEN",
-    images: [
-      ,
-    ],
-    materials: [
-      ,
-    ],
-    colors: [],
-    dimensions: "0 × 0 × 0 mm",
-    printTime: "0m",
-    sku: "DIM-DSK-001",
-    featured: true,
-    active: true,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
+  
   {
     id: "prod-002",
-    name: "Strata Modular Cable Spine",
-    slug: "strata-modular-cable-spine",
+    name: "Nothing",
+    slug: "This is a placeholder for upcoming products :)",
     description:
-      "Tactile, monolithic desktop cable organizer with weighted interlocking chambers. Designed to hold heavy braided cables, Thunderbolt connectors, and USB-C lines without desk clutter.",
-    price: 280.0,
-    category: "Desk & Studio",
+      "Product Description here",
+    price: 0.0,
+    category: "None",
     images: [
-      "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?q=80&w=1200&auto=format&fit=crop",
+      "",
+      "",
     ],
-    materials: ["PLA Matte (Architectural Grade)", "PETG Functional (High Toughness)"],
-    colors: ["Graphite Charcoal", "Paper Off-White", "Terracotta Umber"],
-    dimensions: "94 × 42 × 30 mm",
-    printTime: "1h 15m",
+    materials: ["NONE"],
+    colors: ["NONE"],
+    dimensions: "0 × 0 × 0 mm",
+    printTime: "0m",
     sku: "DIM-DSK-002",
     featured: true,
     active: true,
