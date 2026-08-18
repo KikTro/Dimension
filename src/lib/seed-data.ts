@@ -124,49 +124,24 @@ export const SEED_MATERIALS = [
 ];
 
 export const SEED_PRODUCTS = [
-  
   {
-    id: "prod-002",
+    id: "prod-001",
     name: "Nothing",
-    slug: "This is a placeholder for upcoming products :)",
+    slug: "nothing",
     description:
-      "Product Description here",
-    price: 0.0,
-    category: "None",
-    images: [
-      "",
-      "",
-    ],
-    materials: ["NONE"],
-    colors: ["NONE"],
-    dimensions: "0 × 0 × 0 mm",
-    printTime: "0m",
-    sku: "DIM-DSK-002",
-    featured: true,
-    active: true,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: "prod-004",
-    name: "NONE",
-    slug: "tectonic-geodesic-planter",
-    description:
-      "Mathematically sculpted isometric vessel with an internal sub-irrigation reservoir and concealed water overflow basin. Clean multifaceted geometry with watertight interior walls.",
+      "There is nothing here :)",
     price: 640.0,
-    category: "Architectural Objects",
+    category: "Placeholder",
     images: [
-      "https://images.unsplash.com/photo-1485955900006-10f4d324d411?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?q=80&w=1200&auto=format&fit=crop",
+      "",
+      "",
     ],
     materials: [
-      "PLA Matte (Architectural lalala)",
-      "PETG Functional (High Toughness)",
-      "Carbon Fiber Reinforced PLA",
+      "",
     ],
-    colors: ["Paper Off-White", "Graphite Charcoal", "Limestone Stone", "Olive Graphite"],
-    dimensions: "128 × 2131 × 110 mm",
-    printTime: "0h 10m",
+    colors: ["NONE", "NOTHING"],
+    dimensions: "0 × 0 × 0 mm",
+    printTime: "0h 0m",
     sku: "DIM-ARC-001",
     featured: true,
     active: true,
